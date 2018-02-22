@@ -27964,6 +27964,7 @@ MdChipsCtrl.prototype.hasMaxChipsReached = function() {
  */
 MdChipsCtrl.prototype.validateModel = function() {
   this.ngModelCtrl.$setValidity('md-max-chips', !this.hasMaxChipsReached());
+  this.ngModelCtrl.$validate(); // rerun any registered validators
 };
 
 /**
@@ -28089,9 +28090,15 @@ MdChipsCtrl.prototype.configureNgModel = function(ngModelCtrl) {
   this.ngModelCtrl = ngModelCtrl;
 
   var self = this;
+
+  // in chips the meaning of $isEmpty changes
+  ngModelCtrl.$isEmpty = function(value) {
+      return !value || value.length === 0;
+  };
+
   ngModelCtrl.$render = function() {
-    // model is updated. do something.
-    self.items = self.ngModelCtrl.$viewValue;
+      // model is updated. do something.
+      self.items = self.ngModelCtrl.$viewValue;
   };
 };
 
